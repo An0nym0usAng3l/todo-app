@@ -5,9 +5,9 @@ const { doc, getDoc, updateDoc, arrayUnion } = require("firebase/firestore")
 const index = async (req, res) => {
     switch (req.method) {
         case "POST":
-            const { title, todo_id } = req.body;
-            if (!title) return res.json({ message: "Title is required" })
-            if (!todo_id) return res.json({ message: "Todo Id is required" })
+            const { title, todo_id } = JSON.parse(req.body);
+            if (!title) return res.json({ message: "Subtask Title is required" })
+            if (!todo_id) return res.json({ message: "Todo Title is required" })
 
             const taskRef = doc(db, "tasks", todo_id)
             let exists = (await getDoc(taskRef)).data()
@@ -16,6 +16,7 @@ const index = async (req, res) => {
             if (subtaskExists) return res.json({ message: "Subtask already exists" })
             try {
                 await updateDoc(taskRef, {
+                    status: false,
                     subtasks: arrayUnion({
                         title,
                         status: false

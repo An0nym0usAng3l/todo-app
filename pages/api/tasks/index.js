@@ -1,6 +1,6 @@
 import React from 'react'
 const { db } = require("../../../scripts/firebase-config");
-const { collection, query, getDocs, addDoc } = require("firebase/firestore")
+const { collection, query, getDocs, addDoc, setDoc, getDoc, doc } = require("firebase/firestore")
 
 const index = async (req, res) => {
     const q = query(collection(db, "tasks"));
@@ -15,14 +15,13 @@ const index = async (req, res) => {
             });
             return res.send(tasks);
         case "POST":
-            const { title } = req.body;
+            const { title } = JSON.parse(req.body);
             if (!title) return res.json({ message: "Title is required" })
-            let titles = []
-            querySnapshot.forEach((doc) => {
-                titles.push(doc.data().title);
-            });
-            let exists = titles.some((i) => i == title)
-            if (exists) return res.json({ message: "Task already exists" })
+            const docRef = doc(db, "tasks", title);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                return res.json({ message: "Task already exists" })
+            }
             const payload = {
                 title,
                 status: false,
@@ -30,7 +29,7 @@ const index = async (req, res) => {
                 subtasks: []
             }
             try {
-                await addDoc(collection(db, "tasks"), {
+                await setDoc(doc(db, "tasks", title), {
                     ...payload
                 })
                 return res.status(200).json({ message: "Task Added" })

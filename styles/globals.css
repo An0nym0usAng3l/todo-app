@@ -29,6 +29,7 @@ main {
 
 .container {
   width: 30%;
+  position: relative;
   /* border: 1px solid rgb(141, 117, 117); */
   text-align: center;
 }
@@ -40,9 +41,21 @@ form {
   margin: 10px 0px;
 }
 
+.error {
+  /* color: red; */
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .form-text {
   width: 70%;
   padding: 5px;
+}
+
+.subtask .form-text {
+  border: none;
+  outline: none;
 }
 
 .form-btn {
@@ -95,4 +108,31 @@ form {
   padding: 0px 5px;
   height: 50px;
   color: rgb(102, 88, 88);
+}
+
+.spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #ffffffaa;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+}
+
+.spinner>div {
+  width: 40px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px solid blueviolet;
+  border-top: none;
+  animation: spin 1s linear 0s infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

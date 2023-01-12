@@ -6,7 +6,7 @@ const index = async (req, res) => {
     switch (req.method) {
         case "PATCH":
             const docId = req.query.id
-            const { status } = req.body;
+            const { status } = JSON.parse(req.body);
             if (!docId) return res.json({ message: "Task Id is required" })
 
             const docRef = doc(db, "tasks", docId)
