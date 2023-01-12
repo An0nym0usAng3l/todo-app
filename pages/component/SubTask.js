@@ -5,6 +5,7 @@ const SubTask = ({ subtask, item, handleSubTaskUpdate }) => {
         <div className='subtask'>
             <div className='title'>
                 <input
+                    key={Math.random()}
                     type="checkbox"
                     className="checkbox"
                     defaultChecked={subtask.status}

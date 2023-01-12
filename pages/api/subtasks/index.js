@@ -28,7 +28,7 @@ const index = async (req, res) => {
             }
 
         default:
-            res.status(200).json({ message: 'You just tried to access this route with a method does not exist' })
+            res.status(405).json({ message: 'You just tried to access this route with a method does not exist' })
     }
 }
 

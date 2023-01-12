@@ -16,7 +16,6 @@ const Todo = () => {
             const data = await res.json();
             data.sort((a, b) => b.created_at - a.created_at)
             setTodo(data);
-            setActive(null)
         } catch (err) {
             console.log(err);
         }
