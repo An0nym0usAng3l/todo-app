@@ -1,65 +1,26 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { clearNotice, fetchTodos, selectLoading, updateSubTask, updateTodos } from '../../slices/todoSlice'
 import AddSubTask from './AddSubTask'
 import AddTodo from './AddTodo'
 import Spinner from './Spinner'
 import SubTask from './SubTask'
 
 const Todo = () => {
-    const [todo, setTodo] = useState(null)
-    const [error, setError] = useState(null)
-    const [active, setActive] = useState(todo && todo[0]?.title)
-    const [loading, setLoading] = useState(false);
-
-    const fetchTodo = async () => {
-        try {
-            const res = await fetch("/api/tasks/")
-            const data = await res.json();
-            data.sort((a, b) => b.created_at - a.created_at)
-            setTodo(data);
-        } catch (err) {
-            console.log(err);
-        }
-    }
+    const dispatch = useDispatch()
+    const todos = useSelector((state) => state.todos.todos)
+    const notice = useSelector((state) => state.todos.notice)
+    const loading = useSelector(selectLoading)
+    const [active, setActive] = useState(todos && todos[0]?.title)
 
     const handleTaskUpdate = async (status, todo_id) => {
         if (loading) return
-        setLoading(true)
-        try {
-            const res = await fetch(`/api/tasks/${todo_id}`, {
-                method: "PATCH",
-                body: JSON.stringify({
-                    status
-                })
-            })
-            const data = await res.json();
-            await fetchTodo();
-            setLoading(false)
-            setError(await data.message)
-        } catch (err) {
-            setLoading(false)
-            setError(err.message);
-        }
+        dispatch(updateTodos({ status, todo_id }));
     }
 
     const handleSubTaskUpdate = async (status, todo_id, subtask_title) => {
         if (loading) return
-        setLoading(true)
-        try {
-            const res = await fetch(`/api/subtasks/${todo_id}`, {
-                method: "PATCH",
-                body: JSON.stringify({
-                    status,
-                    subtask_title
-                })
-            })
-            const data = await res.json();
-            await fetchTodo();
-            setLoading(false)
-            setError(await data.message)
-        } catch (err) {
-            setLoading(false)
-            setError(err.message);
-        }
+        dispatch(updateSubTask({ status, todo_id, subtask_title }));
     }
 
     const getCompleted = (array) => {
@@ -71,34 +32,29 @@ const Todo = () => {
     }
 
     useEffect(() => {
-        fetchTodo()
+        dispatch(fetchTodos())
     }, [])
     useEffect(() => {
-        if (error) {
+        if (notice) {
             setTimeout(() => {
-                setError(null)
+                dispatch(clearNotice())
             }, 3000)
         }
-    }, [error])
+    }, [notice])
     return (
         <div className='container'>
             {
                 loading && <Spinner />
             }
             {
-                error && <p className='error'>{error}</p>
+                notice && <p className='error'>{notice}</p>
             }
-            <h2>Todo App</h2>
-            <AddTodo
-                setError={setError}
-                loading={loading}
-                setLoading={setLoading}
-                fetchTodo={fetchTodo}
-            />
+            <h2 onClick={test}>Todo App</h2>
+            <AddTodo />
             <div className='task'>
                 {
-                    todo?.map((item) => (
-                        <>
+                    todos?.map((item) => (
+                        <div key={item.title}>
                             <div className='task-detail' key={item.title}>
                                 <div className='title'>
                                     <input type="checkbox"
@@ -135,16 +91,12 @@ const Todo = () => {
                                         <div className='subtask'>
                                             <AddSubTask
                                                 title={item?.title}
-                                                setError={setError}
-                                                loading={loading}
-                                                setLoading={setLoading}
-                                                fetchTodo={fetchTodo}
                                             />
                                         </div>
                                     </div>
                                 )
                             }
-                        </>
+                        </div>
                     ))
                 }
             </div>

@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import { Poppins } from '@next/font/google'
 import Todo from './component/Todo'
+import { Provider } from 'react-redux'
+import store from '../store'
 
 const poppins = Poppins({
   weight: '400'
@@ -16,7 +18,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={poppins.className}>
-        <Todo />
+        <Provider store={store}>
+          <Todo />
+        </Provider>
       </main>
     </>
   )

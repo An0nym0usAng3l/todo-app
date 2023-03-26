@@ -1,31 +1,16 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { addTodos, selectLoading } from '../../slices/todoSlice'
 
-const AddTodo = ({
-    setError,
-    loading,
-    setLoading,
-    fetchTodo
-}) => {
+const AddTodo = () => {
     const [title, setTitle] = useState(null)
+    const loading = useSelector(selectLoading)
+    const dispatch = useDispatch()
 
     const handleTodoSubmit = async (e) => {
         e.preventDefault()
         if (!title || loading) return;
-        setLoading(true)
-        try {
-            let res = await fetch("/api/tasks/", {
-                method: "POST",
-                body: JSON.stringify({ title })
-            })
-            let data = await res.json()
-            await fetchTodo();
-            setLoading(false)
-            setError(await data.message)
-        } catch (e) {
-            console.log(e)
-            setLoading(false)
-            setError(e.message)
-        }
+        dispatch(addTodos({ title }))
     }
     return (
         <form onSubmit={handleTodoSubmit}>

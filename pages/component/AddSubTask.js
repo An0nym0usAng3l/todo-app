@@ -1,35 +1,18 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { addSubTask, selectLoading } from '../../slices/todoSlice'
 
 const AddSubTask = ({
-    title,
-    setError,
-    loading,
-    setLoading,
-    fetchTodo
+    title
 }) => {
     const [subtask, setSubtask] = useState(null)
+    const loading = useSelector(selectLoading)
+    const dispatch = useDispatch()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!subtask || loading) return;
-        setLoading(true)
-        try {
-            let res = await fetch("/api/subtasks/", {
-                method: "POST",
-                body: JSON.stringify({
-                    title: subtask,
-                    todo_id: title
-                })
-            })
-            let data = await res.json()
-            await fetchTodo();
-            setLoading(false)
-            setError(await data.message)
-        } catch (e) {
-            console.log(e)
-            setLoading(false)
-            setError(e.message)
-        }
+        dispatch(addSubTask({ title, subtask }))
     }
     return (
         <form onSubmit={handleSubmit}>
