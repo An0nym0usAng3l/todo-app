@@ -49,7 +49,7 @@ const Todo = () => {
             {
                 notice && <p className='error'>{notice}</p>
             }
-            <h2 onClick={test}>Todo App</h2>
+            <h2>Todo App</h2>
             <AddTodo />
             <div className='task'>
                 {
