@@ -8,10 +8,10 @@ const SubTask = ({ subtask, item, handleSubTaskUpdate }) => {
                     key={Math.random()}
                     type="checkbox"
                     className="checkbox"
-                    defaultChecked={subtask.status}
-                    onChange={(e) => handleSubTaskUpdate(e.target.checked, item.title, subtask.title)}
+                    defaultChecked={subtask?.status}
+                    onChange={(e) => handleSubTaskUpdate(e.target.checked, item?.title, subtask?.title)}
                 />
-                <div>{subtask.title}</div>
+                <div>{subtask?.title}</div>
             </div>
         </div>
     )
